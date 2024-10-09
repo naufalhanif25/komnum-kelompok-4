@@ -13,7 +13,7 @@ def iteration_method():
     print("Metode iterasi")
 
 def table():
-    print("Table")
+    print("Tabel")
 
 def plot():
     print("Plot")

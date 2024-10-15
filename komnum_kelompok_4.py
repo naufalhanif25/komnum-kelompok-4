@@ -1,4 +1,5 @@
 import tkinter as tk
+from  tkinter import ttk
 from numpy import *
 import matplotlib
 import os
@@ -70,12 +71,13 @@ def output_processing():
         gx = insert_func_value(func_gx, first_x)
 
         announce_label.config(text = "Success")
-        interface.after(2000, hide_label, announce_label)
-    except Exception as e:
-        announce_label.config(text = e)
-        interface.after(2000, hide_label, announce_label)
+        interface.after(3000, hide_label, announce_label)
+    except Exception as error_info:
+        announce_label.config(text = "Error: " + str(error_info))
+        interface.after(3000, hide_label, announce_label)
 
 current_dir = os.path.dirname(__file__)
+data = []
 
 BACKGROUND_COLOR = "#FFFFFF"
 FILL_COLOR = "#F1F2F6"
@@ -141,7 +143,7 @@ for (char, row, col) in calc_buttons:
     if (col >= 1) and (col <= 6):
         WIDTH = 3; HEIGHT = 1
     elif col == 8:
-        PAD_X, PAD_Y = ((0, 20), 1)
+        PAD_X, PAD_Y = ((1, 20), 1)
     else:
         WIDTH = 6; HEIGHT = 1
 
@@ -178,18 +180,49 @@ run_button = tk.Button(interface, text = "Run", padx = 6, command = output_proce
 run_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 run_button.grid(padx = (20, 0), pady = (12, 0), row = 6, column = 0)
 
-announce_label = tk.Label(interface, bg = BACKGROUND_COLOR, font = ("Arial", 8, "bold"), anchor = "w")
+announce_label = tk.Label(interface, bg = BACKGROUND_COLOR, font = ("Arial", 8), anchor = "w")
 announce_label.grid(pady = (10, 0), row = 6, column = 1, sticky = "w")
 
 output_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Output", font = ("Arial", 12, "bold"), anchor = "center")
 output_label.grid(padx = (20, 6), pady = (20, 0), row = 7, column = 0)
 
+table_frame = tk.Frame(interface)
+table_frame.grid(padx = (20, 0), pady = (6, 12), row = 8, column = 0, columnspan = 9)
+
+style = ttk.Style()
+style.configure("Treeview", borderwidth = 2)
+style.configure("Treeview.Heading", background = FILL_COLOR, font = ("Arial", 10))
+
+scrollbar = ttk.Scrollbar(table_frame, orient = "vertical")
+scrollbar.grid(row = 0, column = 1, sticky = "ns")
+
+table = ttk.Treeview(table_frame, yscrollcommand = scrollbar.set, columns = ("Iterasi", "xi", "g(xi)", "f(xi)"), show = "headings")
+table.configure(height = 5)
+table.grid(row = 0, column = 0)
+
+scrollbar.config(command = table.yview)
+
+table.column("#0", width = 0, stretch = tk.NO)
+table.column("Iterasi", anchor = tk.CENTER, width = 110)
+table.column("xi", anchor = tk.CENTER, width = 110)
+table.column("g(xi)", anchor = tk.CENTER, width = 280)
+table.column("f(xi)", anchor = tk.CENTER, width = 280)
+
+table.heading("#0", text = "", anchor = tk.CENTER)
+table.heading("Iterasi", text = "Iterasi", anchor = tk.CENTER)
+table.heading("xi", text = "xi", anchor = tk.CENTER)
+table.heading("g(xi)", text = "g(xi)", anchor = tk.CENTER)
+table.heading("f(xi)", text = "f(xi)", anchor = tk.CENTER)
+
+for row in data:
+    table.insert(parent = "", index = "end", iid = row[0], text = "", values = row)
+
 exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.destroy, font = ("Arial", 8, "bold"))
 exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
-exit_button.grid(padx = (20, 0), pady = (6, 20), row = 8, column = 0)
+exit_button.grid(padx = (20, 0), pady = (6, 20), row = 9, column = 0)
 
-plot_button = tk.Button(interface, text = "Show Plot", padx = 6, command = plot, font = ("Arial", 8, "bold"))
+plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = plot, font = ("Arial", 8, "bold"))
 plot_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
-plot_button.grid(padx = (0, 0), pady = (6, 20), row = 8, column = 1, sticky = "w")
+plot_button.grid(padx = (0, 0), pady = (6, 20), row = 9, column = 1, sticky = "w")
 
 interface.mainloop()

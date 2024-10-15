@@ -3,6 +3,7 @@ import tkinter as tk
 import matplotlib as plt
 import prettytable as pt
 
+#Fungsi untuk mengonversi fungsi matematika input dari format teks
 def convert_function(input_func):
     input_func = input_func.replace("^", "**").replace("x", "*x")
     final_func = input_func.lstrip("*")

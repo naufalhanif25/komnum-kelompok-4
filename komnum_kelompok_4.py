@@ -146,31 +146,31 @@ for (char, row, col) in calc_buttons:
         WIDTH = 6; HEIGHT = 1
 
     if char == "C":
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda: clicked_entry.delete(0, tk.END)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "\u221A":
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "sqrt()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "\u03C0":
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "\u03C0": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "_":
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "\u0020": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "\u27F5":
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = backspace).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif (row > 1) and ((col == 7) or (col == 8)):
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = char + "()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     else:
-        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 12), 
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = char: insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
 

@@ -17,7 +17,7 @@ def insert_func_value(func_input, x):
     func = convert_function(func_input)
 
     try:
-        result = float(eval(func))
+        result = eval(func)
     except Exception as e:
         print("Error:", e)
 
@@ -86,6 +86,8 @@ def output_processing():
 
         announce_label.config(text = "Success")
         interface.after(3000, hide_label, announce_label)
+
+        result_label.config(text = f"x = {0}")
     except Exception as error_info:
         announce_label.config(text = "Error: " + str(error_info))
         interface.after(3000, hide_label, announce_label)
@@ -221,7 +223,7 @@ output_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Output", font 
 output_label.grid(padx = (20, 6), pady = (20, 0), row = 7, column = 0)
 
 table_frame = tk.Frame(interface)
-table_frame.grid(padx = (20, 0), pady = (6, 12), row = 8, column = 0, columnspan = 9)
+table_frame.grid(padx = (20, 0), pady = (6, 0), row = 8, column = 0, columnspan = 9)
 
 style = ttk.Style()
 style.configure("Treeview", borderwidth = 2)
@@ -256,12 +258,15 @@ for col, row in enumerate(data):
     else:
         table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("allrows",))
 
+result_label = tk.Label(interface, bg = BACKGROUND_COLOR, font = ("Arial", 10), anchor = "w")
+result_label.grid(padx = (20, 0), pady = (0, 6), row = 9, column = 0, sticky = "w")
+
 exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.destroy, font = ("Arial", 8, "bold"))
 exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
-exit_button.grid(padx = (20, 0), pady = (6, 20), row = 9, column = 0)
+exit_button.grid(padx = (20, 0), pady = (6, 20), row = 10, column = 0)
 
 plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = plot, font = ("Arial", 8, "bold"))
 plot_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
-plot_button.grid(padx = (0, 0), pady = (6, 20), row = 9, column = 1, sticky = "w")
+plot_button.grid(padx = (0, 0), pady = (6, 20), row = 10, column = 1, sticky = "w")
 
 interface.mainloop()

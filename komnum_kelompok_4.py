@@ -1,5 +1,6 @@
 import numpy as np
 import tkinter as tk
+from tkinter import ttk
 import matplotlib as plt
 import prettytable as pt
 
@@ -22,12 +23,34 @@ def insert_func_value(func_input, x):
 def function():
     print("f(x)")
 
-def iteration_method():
-    print("Metode iterasi")
+def iteration_method(f_x, g_x, x0, max_iter, error):
+    data = []
 
-def table():
-    print("Tabel")
-
+def table(interface, data):
+    style = ttk.Style()
+    style.configure("Treeview", rowheight=25, borderwidth=1, relief="solid") 
+    style.configure("Treeview.Heading", font=("Arial", 10, "bold"), borderwidth=1, relief="solid")  
+    
+    frame = ttk.Frame(interface, borderwidth=2, relief="groove")
+    frame.pack(padx=10,pady=10)
+    
+    tree = ttk.Treeview(frame, columns=("Iterasi", "x","f(x)", "g(x)"), show="headings")
+    
+    tree.heading("Iterasi", text="Iterasi")
+    tree.heading("X", text="X")
+    tree.heading("f(x)", text="f(x)")
+    tree.heading("g(x)", text="g(x)")
+    
+    tree.heading("Iterasi", anchor="center")
+    tree.heading("X", anchor="center")
+    tree.heading("f(x)", anchor="center")
+    tree.heading("g(x)", anchor="center")
+    
+    for row in data:
+        tree.insert("", "end", values=[f"{row[0]}", f"{row[1]:.6f}", f"{row[2]:.6f}", f"{row[3]:.6f}", f"{row[4]:.6f}"])
+        
+    tree.pack()
+    
 def plot():
     print("Plot")
 
@@ -65,10 +88,12 @@ def main():
         first_x = entry_3.get()
         iter_N = entry_4.get()
         error = entry_5.get()
+        
+        # panggil fungsi method iterasi
 
     button = tk.Button(text = "Run", command = get_value)
     button.grid(padx = 12, pady = 6, row = 7)
-
+    
     tk.Label(interface, text = "OUTPUT", font = ("Arial", 8, "bold")).grid(padx = 12, pady = 6, row = 8)
 
     interface.geometry("500x400")

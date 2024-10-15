@@ -40,6 +40,18 @@ def on_entry_click(event):
 
     clicked_entry = event.widget
 
+def on_focus_in(event):
+    event.widget.config(highlightcolor = HIGHLIGHT_COLOR)
+
+def on_focus_out(event):
+    if event.widget.get() == "":
+        event.widget.config(highlightcolor = BASE_COLOR)
+    else:
+        event.widget.config(highlightcolor = HIGHLIGHT_COLOR)
+
+def focus_out_entries(label):
+    label.focus_set()
+
 def insert_symbol(symbol):
     cursor_position = clicked_entry.index(tk.INSERT)
 
@@ -59,6 +71,8 @@ def hide_label(label):
 
 def output_processing():
     global func_fx , func_gx, first_x, N_iter, error
+
+    focus_out_entries(output_label)
 
     try:
         func_fx = entry_fx.get()
@@ -83,6 +97,9 @@ BACKGROUND_COLOR = "#FFFFFF"
 FILL_COLOR = "#F1F2F6"
 BUTTON_COLOR_1 = "#00A8FF"
 BUTTON_COLOR_2 = "#FF4757"
+HIGHLIGHT_COLOR = "#00A8FF"
+BASE_COLOR = "lightgray"
+LASTROW_COLOR = "#ECCC68"
 
 interface = tk.Tk()
 interface.resizable(False, False)
@@ -109,18 +126,23 @@ error = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Error", font = ("Aria
 error.grid(padx = (20, 6), pady = (6, 0), row = 5, column = 0, sticky = "w")
 
 entry_fx = tk.Entry(interface, bg = FILL_COLOR, borderwidth = 1, width = 64, relief = "groove")
+entry_fx.config(highlightbackground = BASE_COLOR, highlightthickness = 1)
 entry_fx.grid(padx = (12, 20), pady = (8, 0), row = 1, column = 1, sticky = "w")
 
 entry_gx = tk.Entry(interface, bg = FILL_COLOR, borderwidth = 1, width = 64, relief = "groove")
+entry_gx.config(highlightbackground = BASE_COLOR, highlightthickness = 1)
 entry_gx.grid(padx = (12, 20), pady = (8, 0), row = 2, column = 1, sticky = "w")
 
 entry_x1 = tk.Entry(interface, bg = FILL_COLOR, borderwidth = 1, width = 64, relief = "groove")
+entry_x1.config(highlightbackground = BASE_COLOR, highlightthickness = 1)
 entry_x1.grid(padx = (12, 20), pady = (8, 0), row = 3, column = 1, sticky = "w")
 
 entry_N_iter = tk.Entry(interface, bg = FILL_COLOR, borderwidth = 1, width = 64, relief = "groove")
+entry_N_iter.config(highlightbackground = BASE_COLOR, highlightthickness = 1)
 entry_N_iter.grid(padx = (12, 20), pady = (8, 0), row = 4, column = 1, sticky = "w")
 
 entry_error = tk.Entry(interface, bg = FILL_COLOR, borderwidth = 1, width = 64, relief = "groove")
+entry_error.config(highlightbackground = BASE_COLOR, highlightthickness = 1)
 entry_error.grid(padx = (12, 20), pady = (8, 0), row = 5, column = 1, sticky = "w")
 
 entry_fx.bind("<Button-1>", on_entry_click)
@@ -128,6 +150,18 @@ entry_gx.bind("<Button-1>", on_entry_click)
 entry_x1.bind("<Button-1>", on_entry_click)
 entry_N_iter.bind("<Button-1>", on_entry_click)
 entry_error.bind("<Button-1>", on_entry_click)
+
+entry_fx.bind("<FocusIn>", on_focus_in)
+entry_gx.bind("<FocusIn>", on_focus_in)
+entry_x1.bind("<FocusIn>", on_focus_in)
+entry_N_iter.bind("<FocusIn>", on_focus_in)
+entry_error.bind("<FocusIn>", on_focus_in)
+
+entry_fx.bind("<FocusOut>", on_focus_out)
+entry_gx.bind("<FocusOut>", on_focus_out)
+entry_x1.bind("<FocusOut>", on_focus_out)
+entry_N_iter.bind("<FocusOut>", on_focus_out)
+entry_error.bind("<FocusOut>", on_focus_out)
 
 calc_buttons = [
     ("7", 1, 2), ("8", 1, 3), ("9", 1, 4), ("-", 1, 5), ("\u221A", 1, 6), ("\u03C0", 1, 7), ("x", 1, 8),
@@ -198,6 +232,8 @@ scrollbar.grid(row = 0, column = 1, sticky = "ns")
 
 table = ttk.Treeview(table_frame, yscrollcommand = scrollbar.set, columns = ("Iterasi", "xi", "g(xi)", "f(xi)"), show = "headings")
 table.configure(height = 5)
+table.tag_configure("allrows", background = FILL_COLOR)
+table.tag_configure("lastrow", background = LASTROW_COLOR)
 table.grid(row = 0, column = 0)
 
 scrollbar.config(command = table.yview)
@@ -214,8 +250,11 @@ table.heading("xi", text = "xi", anchor = tk.CENTER)
 table.heading("g(xi)", text = "g(xi)", anchor = tk.CENTER)
 table.heading("f(xi)", text = "f(xi)", anchor = tk.CENTER)
 
-for row in data:
-    table.insert(parent = "", index = "end", iid = row[0], text = "", values = row)
+for col, row in enumerate(data):
+    if col == (len(data) - 1):
+        table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("lastrow",))
+    else:
+        table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("allrows",))
 
 exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.destroy, font = ("Arial", 8, "bold"))
 exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")

@@ -2,10 +2,16 @@ import tkinter as tk
 from  tkinter import ttk
 from numpy import *
 import matplotlib
+import string
 import os
 
 def convert_function(input_func):
-    input_func = input_func.replace("^", "**").replace("x", "*x")
+    for num in range(10):
+        input_func = input_func.replace(str(num) + "x", str(num) + "*x")
+        input_func = input_func.replace(str(num) + "e", str(num) + "*exp(1)")
+        input_func = input_func.replace(str(num) + "\u03C0", str(num) + "*pi")
+    
+    input_func = input_func.replace("^", "**")
     input_func = input_func.replace("e", "exp(1)").replace("\u03C0", "pi")
     input_func = input_func.replace("\u00D7", "*").replace("\u00F7", "/")
 

@@ -92,6 +92,8 @@ def output_processing():
         announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
         interface.after(3000, hide_label, announce_label)
 
+        result_label.config(text = f"x = NULL")
+
 current_dir = os.path.dirname(__file__)
 data = []
 
@@ -265,7 +267,7 @@ for col, row in enumerate(data):
     else:
         table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("allrows",))
 
-result_label = tk.Label(interface, bg = BACKGROUND_COLOR, font = ("Arial", 10), anchor = "w")
+result_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "x = NULL", font = ("Arial", 8), anchor = "w")
 result_label.grid(padx = (20, 0), pady = (0, 6), row = 9, column = 0, sticky = "w")
 
 exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.destroy, font = ("Arial", 8, "bold"))

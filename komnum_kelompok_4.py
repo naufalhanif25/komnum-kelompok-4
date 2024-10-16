@@ -84,12 +84,12 @@ def output_processing():
         fx = insert_func_value(func_fx, first_x)
         gx = insert_func_value(func_gx, first_x)
 
-        announce_label.config(text = "Success")
+        announce_label.config(text = "Success", fg = SUCCESS_COLOR)
         interface.after(3000, hide_label, announce_label)
 
         result_label.config(text = f"x = {0}")
     except Exception as error_info:
-        announce_label.config(text = "Error: " + str(error_info))
+        announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
         interface.after(3000, hide_label, announce_label)
 
 current_dir = os.path.dirname(__file__)
@@ -99,9 +99,12 @@ BACKGROUND_COLOR = "#FFFFFF"
 FILL_COLOR = "#F1F2F6"
 BUTTON_COLOR_1 = "#00A8FF"
 BUTTON_COLOR_2 = "#FF4757"
+BUTTON_COLOR_3 = "#ECCC68"
+SUCCESS_COLOR = "#2ED573"
+ERROR_COLOR = "#FF4757"
 HIGHLIGHT_COLOR = "#00A8FF"
 BASE_COLOR = "lightgray"
-LASTROW_COLOR = "#ECCC68"
+LASTROW_COLOR = "#7BED9F"
 
 interface = tk.Tk()
 interface.resizable(False, False)
@@ -185,7 +188,7 @@ for (char, row, col) in calc_buttons:
 
     if char == "C":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
-                bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
+                bg = BUTTON_COLOR_3, relief  = "groove", cursor = "hand2",
                 command = lambda: clicked_entry.delete(0, tk.END)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "\u221A":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
@@ -195,13 +198,17 @@ for (char, row, col) in calc_buttons:
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "\u03C0": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
+    elif char == ".":
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10, "bold"), 
+                bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
+                command = lambda t = char: insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "_":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
-                bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
+                bg = BUTTON_COLOR_3, relief  = "groove", cursor = "hand2",
                 command = lambda t = "\u0020": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "\u27F5":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
-                bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
+                bg = BUTTON_COLOR_3, relief  = "groove", cursor = "hand2",
                 command = backspace).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif (row > 1) and ((col == 7) or (col == 8)):
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 

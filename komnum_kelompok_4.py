@@ -5,6 +5,7 @@ import matplotlib
 import string
 import os
 
+#Fungsi untuk mengubah string input menjadi fungsi matematika
 def convert_function(input_func):
     for num in range(10):
         input_func = input_func.replace(str(num) + "x", str(num) + "*x")
@@ -18,7 +19,8 @@ def convert_function(input_func):
     final_func = input_func.lstrip("*")
 
     return final_func
-
+    
+#Fungsi untuk mengevaluasi nilai x yang diberikan
 def insert_func_value(func_input, x):
     func = convert_function(func_input)
 

@@ -3,17 +3,14 @@ from  tkinter import ttk
 from numpy import *
 import matplotlib
 import string
+import re
 import os
 
 def convert_function(input_func):
-    for num in range(10):
-        input_func = input_func.replace(str(num) + "x", str(num) + "*x")
-        input_func = input_func.replace(str(num) + "e", str(num) + "*exp(1)")
-        input_func = input_func.replace(str(num) + "\u03C0", str(num) + "*pi")
-    
-    input_func = input_func.replace("^", "**")
-    input_func = input_func.replace("e", "exp(1)").replace("\u03C0", "pi")
-    input_func = input_func.replace("\u00D7", "*").replace("\u00F7", "/")
+    input_func = input_func.replace("^", "**").replace("\u00D7", "*").replace("\u00F7", "/")
+    input_func = re.sub(r"(\d)(x)", r"\1*x", input_func)
+    input_func = input_func.replace("\u03C0", "pi")
+    input_func = re.sub(r"(\d)(pi)", r"\1*pi", input_func)
 
     final_func = input_func.lstrip("*")
 
@@ -23,11 +20,13 @@ def insert_func_value(func_input, x):
     func = convert_function(func_input)
 
     try:
-        result = eval(func)
+        result = eval(func, {"x": x, "pi": pi, "abs": abs, "exp": exp, "sqrt": sqrt, 
+                            "sin": sin, "cos": cos, "tan": tan, 
+                            "log": log, "log2": log2, "log10": log10})
+
+        return result
     except Exception as e:
         print("Error:", e)
-
-    return result
 
 def function():
     print("f(x)")
@@ -58,6 +57,9 @@ def on_focus_out(event):
 def focus_out_entries(label):
     label.focus_set()
 
+def focus_next_entry(event, next_entry):
+    next_entry.focus_set()
+
 def insert_symbol(symbol):
     cursor_position = clicked_entry.index(tk.INSERT)
 
@@ -83,9 +85,15 @@ def output_processing():
     try:
         func_fx = entry_fx.get()
         func_gx = entry_gx.get()
+
         first_x = entry_x1.get()
+        first_x = float(first_x)
+
         N_iter = entry_N_iter.get()
+        N_iter = int(N_iter)
+
         error = entry_error.get()
+        error = float(error)
 
         fx = insert_func_value(func_fx, first_x)
         gx = insert_func_value(func_gx, first_x)
@@ -93,7 +101,7 @@ def output_processing():
         announce_label.config(text = "Success", fg = SUCCESS_COLOR)
         interface.after(3000, hide_label, announce_label)
 
-        result_label.config(text = f"x = {0}")
+        result_label.config(text = f"x = {fx}")
     except Exception as error_info:
         announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
         interface.after(3000, hide_label, announce_label)
@@ -176,12 +184,17 @@ entry_x1.bind("<FocusOut>", on_focus_out)
 entry_N_iter.bind("<FocusOut>", on_focus_out)
 entry_error.bind("<FocusOut>", on_focus_out)
 
+entry_fx.bind("<Return>", lambda event: focus_next_entry(event, entry_gx))
+entry_gx.bind("<Return>", lambda event: focus_next_entry(event, entry_x1))
+entry_x1.bind("<Return>", lambda event: focus_next_entry(event, entry_N_iter))
+entry_N_iter.bind("<Return>", lambda event: focus_next_entry(event, entry_error))
+
 calc_buttons = [
     ("7", 1, 2), ("8", 1, 3), ("9", 1, 4), ("-", 1, 5), ("\u221A", 1, 6), ("\u03C0", 1, 7), ("x", 1, 8),
     ("4", 2, 2), ("5", 2, 3), ("6", 2, 4), ("\u00D7", 2, 5), ("(", 2, 6), ("sin", 2, 7), ("log", 2, 8),
     ("1", 3, 2), ("2", 3, 3), ("3", 3, 4), ("\u00F7", 3, 5), (")", 3, 6), ("cos", 3, 7), ("log2", 3, 8),
     ("C", 4, 2), ("0", 4, 3), ("+", 4, 4), ("^", 4, 5), ("e", 4, 6), ("tan", 4, 7), ("log10", 4, 8),
-                                                        (".", 5, 6), ("_", 5, 7), ("\u27F5", 5, 8),
+                                           (".", 5, 5), ("abs", 5, 6), ("_", 5, 7), ("\u27F5", 5, 8),
 ]
 
 for (char, row, col) in calc_buttons:
@@ -196,12 +209,20 @@ for (char, row, col) in calc_buttons:
 
     if char == "C":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
-                bg = BUTTON_COLOR_3, relief  = "groove", cursor = "hand2",
+                bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda: clicked_entry.delete(0, tk.END)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
+    elif char == "e":
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
+                bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
+                command = lambda t = "exp()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)                
     elif char == "\u221A":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "sqrt()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
+    elif char == "abs":
+        tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
+                bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
+                command = lambda t = "abs()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
     elif char == "\u03C0":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",

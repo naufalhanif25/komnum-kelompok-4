@@ -1,44 +1,12 @@
 import tkinter as tk
 from  tkinter import ttk
-from numpy import *
 import matplotlib
 import string
-import re
 import os
-
-def convert_function(input_func):
-    input_func = input_func.replace("^", "**").replace("\u00D7", "*").replace("\u00F7", "/")
-    input_func = re.sub(r"(\d)(x)", r"\1*x", input_func)
-    input_func = input_func.replace("\u03C0", "pi")
-    input_func = re.sub(r"(\d)(pi)", r"\1*pi", input_func)
-
-    final_func = input_func.lstrip("*")
-
-    return final_func
-
-def insert_func_value(func_input, x):
-    func = convert_function(func_input)
-
-    try:
-        result = eval(func, {"x": x, "pi": pi, "abs": abs, "exp": exp, "sqrt": sqrt, 
-                            "sin": sin, "cos": cos, "tan": tan, 
-                            "log": log, "log2": log2, "log10": log10})
-
-        return result
-    except Exception as e:
-        print("Error:", e)
-
-def function():
-    print("f(x)")
-
-def iteration_method():
-    print("Metode iterasi")
-
-def table():
-    print("Tabel")
+import iteration_algorithm
 
 def plot():
-    print("Plot")
+    print("plot")
 
 def on_entry_click(event):
     global clicked_entry
@@ -78,7 +46,9 @@ def hide_label(label):
     label.config(text = "")
 
 def output_processing():
-    global func_fx , func_gx, first_x, N_iter, error
+    global data
+
+    data = []
 
     focus_out_entries(output_label)
 
@@ -95,13 +65,23 @@ def output_processing():
         error = entry_error.get()
         error = float(error)
 
-        fx = insert_func_value(func_fx, first_x)
-        gx = insert_func_value(func_gx, first_x)
+        data.append(iteration_algorithm.iteration_algorithm(func_fx, func_gx, N_iter, error, first_x))
+
+        data_transposed = [list(map(list, zip(*col))) for col in data]
+
+        for col, row in enumerate(data_transposed):
+            for sliced_col, value in enumerate(row):
+                if sliced_col == (len(row) - 1):
+                    table.insert(parent = "", index = "end", iid = value, text = "", values = value, tags = ("lastrow",))
+
+                    final_x = value[1]
+                else:
+                    table.insert(parent = "", index = "end", iid = value, text = "", values = value, tags = ("allrows",))
 
         announce_label.config(text = "Success", fg = SUCCESS_COLOR)
         interface.after(3000, hide_label, announce_label)
 
-        result_label.config(text = f"x = {fx}")
+        result_label.config(text = f"x = {final_x}")
     except Exception as error_info:
         announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
         interface.after(3000, hide_label, announce_label)
@@ -109,7 +89,6 @@ def output_processing():
         result_label.config(text = f"x = NULL")
 
 current_dir = os.path.dirname(__file__)
-data = []
 
 BACKGROUND_COLOR = "#FFFFFF"
 FILL_COLOR = "#F1F2F6"
@@ -287,12 +266,6 @@ table.heading("Iterasi", text = "Iterasi", anchor = tk.CENTER)
 table.heading("xi", text = "xi", anchor = tk.CENTER)
 table.heading("g(xi)", text = "g(xi)", anchor = tk.CENTER)
 table.heading("f(xi)", text = "f(xi)", anchor = tk.CENTER)
-
-for col, row in enumerate(data):
-    if col == (len(data) - 1):
-        table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("lastrow",))
-    else:
-        table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("allrows",))
 
 result_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "x = NULL", font = ("Arial", 8), anchor = "w")
 result_label.grid(padx = (20, 0), pady = (0, 6), row = 9, column = 0, sticky = "w")

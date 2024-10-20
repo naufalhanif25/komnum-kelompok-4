@@ -45,7 +45,7 @@ def backspace():
 def hide_label(label):
     label.config(text = "")
 
-def output_processing():
+def output_processing(event = None):
     global data
 
     data = []
@@ -68,6 +68,9 @@ def output_processing():
         data.append(iteration_algorithm.iteration_algorithm(func_fx, func_gx, N_iter, error, first_x))
 
         data_transposed = [list(map(list, zip(*col))) for col in data]
+
+        for item in table.get_children():
+            table.delete(item)
 
         for col, row in enumerate(data_transposed):
             for sliced_col, value in enumerate(row):
@@ -167,6 +170,7 @@ entry_fx.bind("<Return>", lambda event: focus_next_entry(event, entry_gx))
 entry_gx.bind("<Return>", lambda event: focus_next_entry(event, entry_x1))
 entry_x1.bind("<Return>", lambda event: focus_next_entry(event, entry_N_iter))
 entry_N_iter.bind("<Return>", lambda event: focus_next_entry(event, entry_error))
+entry_error.bind("<Return>", output_processing)
 
 calc_buttons = [
     ("7", 1, 2), ("8", 1, 3), ("9", 1, 4), ("-", 1, 5), ("\u221A", 1, 6), ("\u03C0", 1, 7), ("x", 1, 8),

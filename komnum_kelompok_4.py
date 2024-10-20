@@ -71,26 +71,32 @@ def on_focus_out(event):
         #Mengatur entri ke warna highlight saat entri terisi
         event.widget.config(highlightcolor = HIGHLIGHT_COLOR)
 
+#Fungsi untuk memindahkan fokus dari label ke elemen lain
 def focus_out_entries(label):
     label.focus_set()
 
+#Fungsi untuk memindahkan fokus ke entri berikutnya
 def focus_next_entry(event, next_entry):
     next_entry.focus_set()
 
+#Fungsi untuk menyisipkan simbol ke dalam entri yang aktif
 def insert_symbol(symbol):
+    #Mendapatkan posisi kursor di entri yang aktif
     cursor_position = clicked_entry.index(tk.INSERT)
-
+    #Menyisipkan simbol pada posisi kursor
     clicked_entry.insert(cursor_position, symbol)
 
+#Fungsi untuk menghapus karakter terakhir dari entri aktif
 def backspace():
-    current_string = clicked_entry.get()
+    current_string = clicked_entry.get() #Mendapatkan teks dari entri
 
     if current_string:
-        new_string = current_string[:-1]
+        new_string = current_string[:-1] #Menghapus karakter terakhir
 
-        clicked_entry.delete(0, tk.END)
-        clicked_entry.insert(0, new_string)
+        clicked_entry.delete(0, tk.END) #Menghapus teks dari entri
+        clicked_entry.insert(0, new_string) #Memasukkan kembali teks yang sudah diubah
 
+#Fungsi untuk menyembunyikan label
 def hide_label(label):
     label.config(text = "")
 
@@ -100,34 +106,41 @@ def output_processing():
     focus_out_entries(output_label)
 
     try:
-        func_fx = entry_fx.get()
-        func_gx = entry_gx.get()
+        func_fx = entry_fx.get() #Mendapatkan fungsi f(x)
+        func_gx = entry_gx.get() #Mendapatkan fungsi g(x)
 
-        first_x = entry_x1.get()
-        first_x = float(first_x)
+        first_x = entry_x1.get() #Mendapatkan nilai x awal
+        first_x = float(first_x) #Mengonversi x jadi float
 
-        N_iter = entry_N_iter.get()
-        N_iter = int(N_iter)
+        N_iter = entry_N_iter.get() #Mendapatkan jumlah iterasi maksimum
+        N_iter = int(N_iter) #Mengonversi jumlah iterasi menjadi integer
 
-        error = entry_error.get()
-        error = float(error)
+        error = entry_error.get() #Mendapatkan nilai toleransi error
+        error = float(error) #Mengonversi nilai toleransi error menjadi float
 
+        #Mengevaluasi fungsi f(x) dan g(x) dengan nilai awal x
         fx = insert_func_value(func_fx, first_x)
         gx = insert_func_value(func_gx, first_x)
 
+        #Menampilkan notifikasi 'sukses'
         announce_label.config(text = "Success", fg = SUCCESS_COLOR)
+        #Menghilangkan notifikasi setelah 3 detik
         interface.after(3000, hide_label, announce_label)
 
+        #Menampilkan hasil evaluasi f(x)
         result_label.config(text = f"x = {fx}")
     except Exception as error_info:
-        announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
+        announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR) #Menampilkan pesan kesalahan jika error
         interface.after(3000, hide_label, announce_label)
 
+        #Menampilkan hasil error
         result_label.config(text = f"x = NULL")
 
-current_dir = os.path.dirname(__file__)
-data = []
 
+current_dir = os.path.dirname(__file__) #Mendapatkan direktori saat ini
+data = [] #Menyimpan data hasil iterasi
+
+#Definisi warna-warna untuk tampilan GUI
 BACKGROUND_COLOR = "#FFFFFF"
 FILL_COLOR = "#F1F2F6"
 BUTTON_COLOR_1 = "#00A8FF"

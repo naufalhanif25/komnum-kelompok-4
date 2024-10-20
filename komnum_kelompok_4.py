@@ -100,6 +100,7 @@ def backspace():
 def hide_label(label):
     label.config(text = "")
 
+#Fungsi untuk memproses output berdasarkan input user
 def output_processing():
     global func_fx , func_gx, first_x, N_iter, error
 
@@ -152,15 +153,18 @@ HIGHLIGHT_COLOR = "#00A8FF"
 BASE_COLOR = "lightgray"
 LASTROW_COLOR = "#7BED9F"
 
+#Membuat main window untuk GUI
 interface = tk.Tk()
-interface.resizable(False, False)
-interface.title("Metode Iterasi")
-interface.iconbitmap(current_dir + "\\icon.ico")
-interface.config(bg = BACKGROUND_COLOR)
+interface.resizable(False, False) #Menonaktifkan opsi resize
+interface.title("Metode Iterasi") #Memberikan judul
+interface.iconbitmap(current_dir + "\\icon.ico") #Menampilkan ikon
+interface.config(bg = BACKGROUND_COLOR) #Mengatur warna latar belakang
 
+#Membuat label input
 input_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Input", font = ("Arial", 12, "bold"), anchor = "center")
 input_label.grid(padx = (20, 0), pady = (6, 0), row = 0, column = 0)
 
+#Membuat label untuk fungsi f(x) dan g(x), nilai x awal, nilai iterasi N, dan nilai toleransi error
 func_fx = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Fungsi f(x)", font = ("Arial", 8), anchor = "w")
 func_fx.grid(padx = (20, 6), pady = (6, 0), row = 1, column = 0, sticky = "w")
 
@@ -176,6 +180,7 @@ N_iteration.grid(padx = (20, 6), pady = (6, 0), row = 4, column = 0, sticky = "w
 error = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Error", font = ("Arial", 8), anchor = "w")
 error.grid(padx = (20, 6), pady = (6, 0), row = 5, column = 0, sticky = "w")
 
+#Membuat entri untuk input pengguna
 entry_fx = tk.Entry(interface, bg = FILL_COLOR, borderwidth = 1, width = 64, relief = "groove")
 entry_fx.config(highlightbackground = BASE_COLOR, highlightthickness = 1)
 entry_fx.grid(padx = (12, 20), pady = (8, 0), row = 1, column = 1, sticky = "w")
@@ -219,6 +224,7 @@ entry_gx.bind("<Return>", lambda event: focus_next_entry(event, entry_x1))
 entry_x1.bind("<Return>", lambda event: focus_next_entry(event, entry_N_iter))
 entry_N_iter.bind("<Return>", lambda event: focus_next_entry(event, entry_error))
 
+#Menentukan posisi baris dan kolom pada tombol kalkulator
 calc_buttons = [
     ("7", 1, 2), ("8", 1, 3), ("9", 1, 4), ("-", 1, 5), ("\u221A", 1, 6), ("\u03C0", 1, 7), ("x", 1, 8),
     ("4", 2, 2), ("5", 2, 3), ("6", 2, 4), ("\u00D7", 2, 5), ("(", 2, 6), ("sin", 2, 7), ("log", 2, 8),
@@ -227,16 +233,18 @@ calc_buttons = [
                                            (".", 5, 5), ("abs", 5, 6), ("_", 5, 7), ("\u27F5", 5, 8),
 ]
 
+#Iterasi untuk setiap tombol kalkulator
 for (char, row, col) in calc_buttons:
     PAD_X, PAD_Y = (1, 1)
 
     if (col >= 1) and (col <= 6):
-        WIDTH = 3; HEIGHT = 1
+        WIDTH = 3; HEIGHT = 1 #Lebar dan tinggi default
     elif col == 8:
         PAD_X, PAD_Y = ((1, 20), 1)
     else:
         WIDTH = 6; HEIGHT = 1
 
+    #Pengaturan fungsi dan tampilan tombol berdasarkan karakter
     if char == "C":
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
@@ -245,7 +253,7 @@ for (char, row, col) in calc_buttons:
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "exp()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)                
-    elif char == "\u221A":
+    elif char == "\u221A": #tombol akar kuadrat
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "sqrt()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
@@ -253,7 +261,7 @@ for (char, row, col) in calc_buttons:
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "abs()": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
-    elif char == "\u03C0":
+    elif char == "\u03C0": #tombol 'pi'
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = "\u03C0": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
@@ -265,7 +273,7 @@ for (char, row, col) in calc_buttons:
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BUTTON_COLOR_3, relief  = "groove", cursor = "hand2",
                 command = lambda t = "\u0020": insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
-    elif char == "\u27F5":
+    elif char == "\u27F5": #tombol backspace
         tk.Button(interface, text = char, width = WIDTH, height = HEIGHT, font = ("Arial", 10), 
                 bg = BUTTON_COLOR_3, relief  = "groove", cursor = "hand2",
                 command = backspace).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
@@ -278,59 +286,73 @@ for (char, row, col) in calc_buttons:
                 bg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2",
                 command = lambda t = char: insert_symbol(t)).grid(padx = PAD_X, pady = PAD_Y, row = row, column = col)
 
+#Tombol run untuk menjalankan fungsi perhitungan
 run_button = tk.Button(interface, text = "Run", padx = 6, command = output_processing, font = ("Arial", 8, "bold"))
 run_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 run_button.grid(padx = (20, 0), pady = (12, 0), row = 6, column = 0)
 
+#Label untuk notifikasi error
 announce_label = tk.Label(interface, bg = BACKGROUND_COLOR, font = ("Arial", 8), anchor = "w")
 announce_label.grid(pady = (10, 0), row = 6, column = 1, sticky = "w")
 
+#Label untuk menampilkan output
 output_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Output", font = ("Arial", 12, "bold"), anchor = "center")
 output_label.grid(padx = (20, 6), pady = (20, 0), row = 7, column = 0)
 
+#Frame tabel hasil
 table_frame = tk.Frame(interface)
 table_frame.grid(padx = (20, 0), pady = (6, 0), row = 8, column = 0, columnspan = 9)
 
+#Tampilan tabel
 style = ttk.Style()
 style.configure("Treeview", borderwidth = 2)
 style.configure("Treeview.Heading", background = FILL_COLOR, font = ("Arial", 10))
 
+#Scrollbar untuk tabel
 scrollbar = ttk.Scrollbar(table_frame, orient = "vertical")
 scrollbar.grid(row = 0, column = 1, sticky = "ns")
 
+#Tabel untuk menampilkan iterasi dan perhitungan
 table = ttk.Treeview(table_frame, yscrollcommand = scrollbar.set, columns = ("Iterasi", "xi", "g(xi)", "f(xi)"), show = "headings")
 table.configure(height = 5)
 table.tag_configure("allrows", background = FILL_COLOR)
 table.tag_configure("lastrow", background = LASTROW_COLOR)
 table.grid(row = 0, column = 0)
 
+#Menghubungkan scrollbar dengan tabel
 scrollbar.config(command = table.yview)
 
+#Pengaturan kolom dalam tabel
 table.column("#0", width = 0, stretch = tk.NO)
 table.column("Iterasi", anchor = tk.CENTER, width = 110)
 table.column("xi", anchor = tk.CENTER, width = 110)
 table.column("g(xi)", anchor = tk.CENTER, width = 280)
 table.column("f(xi)", anchor = tk.CENTER, width = 280)
 
+#Judul untuk tiap kolom
 table.heading("#0", text = "", anchor = tk.CENTER)
 table.heading("Iterasi", text = "Iterasi", anchor = tk.CENTER)
 table.heading("xi", text = "xi", anchor = tk.CENTER)
 table.heading("g(xi)", text = "g(xi)", anchor = tk.CENTER)
 table.heading("f(xi)", text = "f(xi)", anchor = tk.CENTER)
 
+#Memasukkan data ke dalam tabel
 for col, row in enumerate(data):
     if col == (len(data) - 1):
         table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("lastrow",))
     else:
         table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("allrows",))
 
+#Label hasil akhir
 result_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "x = NULL", font = ("Arial", 8), anchor = "w")
 result_label.grid(padx = (20, 0), pady = (0, 6), row = 9, column = 0, sticky = "w")
 
+#Tombol exit
 exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.destroy, font = ("Arial", 8, "bold"))
 exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 exit_button.grid(padx = (20, 0), pady = (6, 20), row = 10, column = 0)
 
+#Tombol untuk menampilkan plot
 plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = plot, font = ("Arial", 8, "bold"))
 plot_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 plot_button.grid(padx = (0, 0), pady = (6, 20), row = 10, column = 1, sticky = "w")

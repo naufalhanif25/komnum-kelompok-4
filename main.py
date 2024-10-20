@@ -278,7 +278,7 @@ exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.
 exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 exit_button.grid(padx = (20, 0), pady = (6, 20), row = 10, column = 0)
 
-plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = plot, font = ("Arial", 8, "bold"))
+plot_button = tk.Button(interface, text = "Show Plot", padx = 6, command = plot, font = ("Arial", 8, "bold"))
 plot_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 plot_button.grid(padx = (0, 0), pady = (6, 20), row = 10, column = 1, sticky = "w")
 

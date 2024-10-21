@@ -5,9 +5,6 @@ import string
 import os
 import iteration_algorithm
 
-def plot():
-    print("plot")
-
 def on_entry_click(event):
     global clicked_entry
 
@@ -239,7 +236,7 @@ announce_label = tk.Label(interface, bg = BACKGROUND_COLOR, font = ("Arial", 8),
 announce_label.grid(pady = (10, 0), row = 6, column = 1, sticky = "w")
 
 output_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Output", font = ("Arial", 12, "bold"), anchor = "center")
-output_label.grid(padx = (20, 6), pady = (20, 0), row = 7, column = 0)
+output_label.grid(padx = (20, 0), pady = (20, 0), row = 7, column = 0)
 
 table_frame = tk.Frame(interface)
 table_frame.grid(padx = (20, 0), pady = (6, 0), row = 8, column = 0, columnspan = 9)
@@ -278,7 +275,7 @@ exit_button = tk.Button(interface, text = "Exit", padx = 6, command = interface.
 exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 exit_button.grid(padx = (20, 0), pady = (6, 20), row = 10, column = 0)
 
-plot_button = tk.Button(interface, text = "Show Plot", padx = 6, command = plot, font = ("Arial", 8, "bold"))
+plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = None, font = ("Arial", 8, "bold"))
 plot_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 plot_button.grid(padx = (0, 0), pady = (6, 20), row = 10, column = 1, sticky = "w")
 

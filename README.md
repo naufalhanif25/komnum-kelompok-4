@@ -16,3 +16,4 @@ File main.py : File ini merupakan aplikasi berbasis GUI menggunakan pustaka tkin
 
 File iteration_algorithm.py: File ini berisi fungsi utama untuk melakukan perhitungan iteratif. Fungsi iteration_algorithm menggunakan dua fungsi input dari pengguna (fx dan gx), serta nilai awal, jumlah iterasi, dan batas kesalahan untuk menghitung hasil iterasi. Hasil perhitungan ini disimpan dalam bentuk daftar yang mencakup nilai-nilai x, g(x), dan f(x) dari setiap iterasi, dan dikembalikan untuk ditampilkan di antarmuka yang dibuat dalam main.py.
 
+File plots.py: File ini menyediakan fungsi untuk memvisualisasikan hasil perhitungan iteratif. Fungsi plots mengambil data dari iteration_algorithm.py yang telah diproses dan ditampilkan dalam main.py, lalu menghasilkan grafik yang memetakan iterasi terhadap nilai x, g(x), dan f(x). Grafik ini memudahkan pengguna untuk melihat perkembangan perhitungan secara visual.

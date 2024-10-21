@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 
 #Fungsi untuk menampilkan grafik 
 def plots(final_x, data):

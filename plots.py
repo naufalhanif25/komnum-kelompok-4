@@ -6,12 +6,7 @@ def plots(final_x, data):
     x_list = [sliced_col for col in data for sliced_col in col[1]]
     gx_list = [sliced_col for col in data for sliced_col in col[2]]
     fx_list = [sliced_col for col in data for sliced_col in col[3]]
-
-    print(N_list)
-    print(x_list)
-    print(gx_list)
-    print(fx_list)
-
+    
     plt.figure(figsize = (10, 6))
 
     plt.plot(N_list, x_list, label = "x", marker = "o", color = "blue")

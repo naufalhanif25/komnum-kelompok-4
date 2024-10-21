@@ -1,76 +1,27 @@
 import tkinter as tk
 from  tkinter import ttk
-from numpy import *
-import matplotlib
 import string
-import re
 import os
+import iteration_algorithm
+import plots
 
-#Fungsi untuk mengubah operator dan simbol matematika ke dalam sintaks python
-def convert_function(input_func):
-    #Mengganti simbol pangkat, perkalian, dan pembagian
-    input_func = input_func.replace("^", "**").replace("\u00D7", "*").replace("\u00F7", "/")
-    
-    #Menambahkan simbol perkalian antara angka dan variabel x
-    input_func = re.sub(r"(\d)(x)", r"\1*x", input_func)
-
-    #Mengganti simbol pi dengan 'pi'
-    input_func = input_func.replace("\u03C0", "pi")
-
-    #Menambahkan tanda perkalian antara angka dengan 'pi'
-    input_func = re.sub(r"(\d)(pi)", r"\1*pi", input_func)
-
-    final_func = input_func.lstrip("*")
-    return final_func
-
-#Fungsi untuk memasukkan nilai x ke dalam fungsi dan mengevaluasi hasilnya
-def insert_func_value(func_input, x):
-    func = convert_function(func_input) #Mengonversi fungsi input ke dalam format yang dapat dievaluasi python
-
-    try:
-        result = eval(func, {"x": x, "pi": pi, "abs": abs, "exp": exp, "sqrt": sqrt, 
-                            "sin": sin, "cos": cos, "tan": tan, 
-                            "log": log, "log2": log2, "log10": log10})
-
-        return result
-    except Exception as e:
-        print("Error:", e) #Print error jika evaluasi gagal
-
-#Fungsi untuk menampilkan f(x)
-def function():
-    print("f(x)")
-
-#Fungsi untuk menampilkan metode iterasi
-def iteration_method():
-    print("Metode iterasi")
-
-#Fungsi untuk menampilkan tabel
-def table():
-    print("Tabel")
-
-#Fungsi untuk menampilkan plot
-def plot():
-    print("Plot")
-
-#Fungsi untuk menangani klik pada entri input
+#Fungsi ketika pengguna mengklik kotak teks
 def on_entry_click(event):
     global clicked_entry
-    #Menyimpan entri yang diklik sebagai entri aktif
+
     clicked_entry = event.widget
 
-#Fungsi untuk mengubah warna 
+#Fungsi ketika kotak teks mendapatkan fokus
 def on_focus_in(event):
-    event.widget.config(highlightcolor = HIGHLIGHT_COLOR) #Mengatur warna highlight saat entri aktif
+    event.widget.config(highlightcolor = HIGHLIGHT_COLOR)
 
-#Fungsi untuk mengubah warna saat entri kehilangan fokus 
+#Fungsi ketika kotak teks kehilangan fokus
 def on_focus_out(event):
     if event.widget.get() == "":
-        #Mengatur entri ke warna dasar saat entri kosong
         event.widget.config(highlightcolor = BASE_COLOR)
     else:
-        #Mengatur entri ke warna highlight saat entri terisi
         event.widget.config(highlightcolor = HIGHLIGHT_COLOR)
-
+        
 #Fungsi untuk memindahkan fokus dari label ke elemen lain
 def focus_out_entries(label):
     label.focus_set()
@@ -81,28 +32,29 @@ def focus_next_entry(event, next_entry):
 
 #Fungsi untuk menyisipkan simbol ke dalam entri yang aktif
 def insert_symbol(symbol):
-    #Mendapatkan posisi kursor di entri yang aktif
     cursor_position = clicked_entry.index(tk.INSERT)
-    #Menyisipkan simbol pada posisi kursor
+
     clicked_entry.insert(cursor_position, symbol)
 
 #Fungsi untuk menghapus karakter terakhir dari entri aktif
 def backspace():
-    current_string = clicked_entry.get() #Mendapatkan teks dari entri
+    current_string = clicked_entry.get()
 
     if current_string:
-        new_string = current_string[:-1] #Menghapus karakter terakhir
+        new_string = current_string[:-1]
 
-        clicked_entry.delete(0, tk.END) #Menghapus teks dari entri
-        clicked_entry.insert(0, new_string) #Memasukkan kembali teks yang sudah diubah
+        clicked_entry.delete(0, tk.END)
+        clicked_entry.insert(0, new_string)
 
 #Fungsi untuk menyembunyikan label
 def hide_label(label):
     label.config(text = "")
 
 #Fungsi untuk memproses output berdasarkan input user
-def output_processing():
-    global func_fx , func_gx, first_x, N_iter, error
+def output_processing(event = None):
+    global data
+
+    data = []
 
     focus_out_entries(output_label)
 
@@ -110,7 +62,7 @@ def output_processing():
         func_fx = entry_fx.get() #Mendapatkan fungsi f(x)
         func_gx = entry_gx.get() #Mendapatkan fungsi g(x)
 
-        first_x = entry_x1.get() #Mendapatkan nilai x awal
+        first_x = entry_x1.get()  #Mendapatkan nilai x awal
         first_x = float(first_x) #Mengonversi x jadi float
 
         N_iter = entry_N_iter.get() #Mendapatkan jumlah iterasi maksimum
@@ -119,9 +71,21 @@ def output_processing():
         error = entry_error.get() #Mendapatkan nilai toleransi error
         error = float(error) #Mengonversi nilai toleransi error menjadi float
 
-        #Mengevaluasi fungsi f(x) dan g(x) dengan nilai awal x
-        fx = insert_func_value(func_fx, first_x)
-        gx = insert_func_value(func_gx, first_x)
+        data.append(iteration_algorithm.iteration_algorithm(func_fx, func_gx, N_iter, error, first_x))
+
+        data_transposed = [list(map(list, zip(*col))) for col in data]
+
+        for item in table.get_children():
+            table.delete(item)
+
+        for col, row in enumerate(data_transposed):
+            for sliced_col, value in enumerate(row):
+                if sliced_col == (len(row) - 1):
+                    table.insert(parent = "", index = "end", iid = value, text = "", values = value, tags = ("lastrow",))
+
+                    final_x = value[1]
+                else:
+                    table.insert(parent = "", index = "end", iid = value, text = "", values = value, tags = ("allrows",))
 
         #Menampilkan notifikasi 'sukses'
         announce_label.config(text = "Success", fg = SUCCESS_COLOR)
@@ -129,17 +93,17 @@ def output_processing():
         interface.after(3000, hide_label, announce_label)
 
         #Menampilkan hasil evaluasi f(x)
-        result_label.config(text = f"x = {fx}")
+        result_label.config(text = f"x = {final_x}")
+
+        plot_button.config(command = lambda: plots.plots(final_x, data))
     except Exception as error_info:
-        announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR) #Menampilkan pesan kesalahan jika error
+        announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
         interface.after(3000, hide_label, announce_label)
 
         #Menampilkan hasil error
         result_label.config(text = f"x = NULL")
 
-
 current_dir = os.path.dirname(__file__) #Mendapatkan direktori saat ini
-data = [] #Menyimpan data hasil iterasi
 
 #Definisi warna-warna untuk tampilan GUI
 BACKGROUND_COLOR = "#FFFFFF"
@@ -155,10 +119,10 @@ LASTROW_COLOR = "#7BED9F"
 
 #Membuat main window untuk GUI
 interface = tk.Tk()
-interface.resizable(False, False) #Menonaktifkan opsi resize
-interface.title("Metode Iterasi") #Memberikan judul
-interface.iconbitmap(current_dir + "\\icon.ico") #Menampilkan ikon
-interface.config(bg = BACKGROUND_COLOR) #Mengatur warna latar belakang
+interface.resizable(False, False)
+interface.title("Metode Iterasi")
+interface.iconbitmap(current_dir + "\\icon.ico")
+interface.config(bg = BACKGROUND_COLOR)
 
 #Membuat label input
 input_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Input", font = ("Arial", 12, "bold"), anchor = "center")
@@ -223,6 +187,7 @@ entry_fx.bind("<Return>", lambda event: focus_next_entry(event, entry_gx))
 entry_gx.bind("<Return>", lambda event: focus_next_entry(event, entry_x1))
 entry_x1.bind("<Return>", lambda event: focus_next_entry(event, entry_N_iter))
 entry_N_iter.bind("<Return>", lambda event: focus_next_entry(event, entry_error))
+entry_error.bind("<Return>", output_processing)
 
 #Menentukan posisi baris dan kolom pada tombol kalkulator
 calc_buttons = [
@@ -238,7 +203,7 @@ for (char, row, col) in calc_buttons:
     PAD_X, PAD_Y = (1, 1)
 
     if (col >= 1) and (col <= 6):
-        WIDTH = 3; HEIGHT = 1 #Lebar dan tinggi default
+        WIDTH = 3; HEIGHT = 1
     elif col == 8:
         PAD_X, PAD_Y = ((1, 20), 1)
     else:
@@ -297,7 +262,7 @@ announce_label.grid(pady = (10, 0), row = 6, column = 1, sticky = "w")
 
 #Label untuk menampilkan output
 output_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "Output", font = ("Arial", 12, "bold"), anchor = "center")
-output_label.grid(padx = (20, 6), pady = (20, 0), row = 7, column = 0)
+output_label.grid(padx = (20, 0), pady = (20, 0), row = 7, column = 0)
 
 #Frame tabel hasil
 table_frame = tk.Frame(interface)
@@ -336,13 +301,6 @@ table.heading("xi", text = "xi", anchor = tk.CENTER)
 table.heading("g(xi)", text = "g(xi)", anchor = tk.CENTER)
 table.heading("f(xi)", text = "f(xi)", anchor = tk.CENTER)
 
-#Memasukkan data ke dalam tabel
-for col, row in enumerate(data):
-    if col == (len(data) - 1):
-        table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("lastrow",))
-    else:
-        table.insert(parent = "", index = "end", iid = row[0], text = "", values = row, tags = ("allrows",))
-
 #Label hasil akhir
 result_label = tk.Label(interface, bg = BACKGROUND_COLOR, text = "x = NULL", font = ("Arial", 8), anchor = "w")
 result_label.grid(padx = (20, 0), pady = (0, 6), row = 9, column = 0, sticky = "w")
@@ -353,7 +311,7 @@ exit_button.config(bg = BUTTON_COLOR_2, fg = BACKGROUND_COLOR, relief  = "groove
 exit_button.grid(padx = (20, 0), pady = (6, 20), row = 10, column = 0)
 
 #Tombol untuk menampilkan plot
-plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = plot, font = ("Arial", 8, "bold"))
+plot_button = tk.Button(interface, text = "Show Plots", padx = 6, command = None, font = ("Arial", 8, "bold"))
 plot_button.config(bg = BUTTON_COLOR_1, fg = BACKGROUND_COLOR, relief  = "groove", cursor = "hand2")
 plot_button.grid(padx = (0, 0), pady = (6, 20), row = 10, column = 1, sticky = "w")
 

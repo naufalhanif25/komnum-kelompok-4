@@ -1,24 +1,27 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot(x_final, data):
-    #Membuat dataframe
-    df = pd.DataFrame(data, columns=['Iterasi', 'x', 'F(x)', 'G(x)'])
+def plots(final_x, data):
     
-    # Plotting hasil
-    plt.figure(figsize=(10, 6))
+    N_list = [sliced_col for col in data for sliced_col in col[0]]
+    x_list = [sliced_col for col in data for sliced_col in col[1]]
+    gx_list = [sliced_col for col in data for sliced_col in col[2]]
+    fx_list = [sliced_col for col in data for sliced_col in col[3]]
+    
+    plt.figure(figsize = (10, 6))
 
-    # Plot nilai x sepanjang iterasi
-    plt.plot(df['Iterasi'], df['x'], label='x', marker='o', color='blue')
-    plt.plot(df['Iterasi'], df['F(x)'], label='F(x)', marker='x', color='green')
-    plt.plot(df['Iterasi'], df['G(x)'], label='G(x)', marker='^', color='orange')
+    plt.plot(N_list, x_list, label = "x", marker = "o", color = "blue")
+    plt.plot(N_list, gx_list, label = "g(x)", marker = "^", color = "green")
+    plt.plot(N_list, fx_list, label = "f(x)", marker = "x", color = "orange")
 
-    # Menambahkan judul dan label
-    plt.title('Hasil Iterasi Titik Tetap')
-    plt.xlabel('Iterasi')
-    plt.ylabel('Nilai')
-    plt.yscale('linear')
-    plt.grid()
+    plt.title("Hasil Iterasi")
+    plt.xlabel("Iterasi")
+    plt.ylabel("Nilai")
+    plt.yscale("linear")
+    plt.grid(True)
     plt.legend()
-    plt.show()
     
+    plt.plot(x_list[len(x_list)-1], final_x, 'ro', label=f'x = {final_x:.6f}')
+    plt.text(x_list[len(x_list)-1], final_x + 0.5, f'x = {final_x:.6f}', fontsize=10, bbox=dict(facecolor='red', alpha=0.25))
+    
+    plt.show()

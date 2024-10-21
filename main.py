@@ -3,6 +3,7 @@ from  tkinter import ttk
 import string
 import os
 import iteration_algorithm
+import plots
 
 def on_entry_click(event):
     global clicked_entry
@@ -81,6 +82,8 @@ def output_processing(event = None):
         interface.after(3000, hide_label, announce_label)
 
         result_label.config(text = f"x = {final_x}")
+
+        plot_button.config(command = lambda: plots.plots(final_x, data))
     except Exception as error_info:
         announce_label.config(text = "Error: " + str(error_info), fg = ERROR_COLOR)
         interface.after(3000, hide_label, announce_label)

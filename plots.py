@@ -27,7 +27,7 @@ def plots(final_x, data):
     plt.ylabel("X", fontsize = 8, fontweight = "bold")
     plt.yscale("linear")
     plt.grid(True)
-    plt.plot(N_list[len(N_list) - 1], final_x, "r*", label = f"x = {final_x:.6f}", color = DOT)
+    plt.plot(N_list[len(N_list) - 1], final_x, "r*", label = f"x = {final_x:.5f}", color = DOT)
     plt.legend(fontsize = 8)
     plt.text(N_list[len(N_list) - 1] - 1.5, final_x + 0.35, f"x = {final_x:.5f}", fontsize = 8, bbox = dict(facecolor = GRAPH_1, alpha = 0.25))
     

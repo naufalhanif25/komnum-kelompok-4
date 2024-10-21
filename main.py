@@ -1,6 +1,5 @@
 import tkinter as tk
 from  tkinter import ttk
-import string
 import os
 import iteration_algorithm
 import plots

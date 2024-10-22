@@ -12,6 +12,10 @@ def on_entry_click(event):
 
 #Fungsi ketika kotak teks mendapatkan fokus
 def on_focus_in(event):
+    global clicked_entry
+    
+    clicked_entry = event.widget
+    
     event.widget.config(highlightcolor = HIGHLIGHT_COLOR)
 
 #Fungsi ketika kotak teks kehilangan fokus
